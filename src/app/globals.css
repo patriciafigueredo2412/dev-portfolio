@@ -1,0 +1,442 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ *
+ * Retro Windows XP x 16-Bit Pixel RPG — design tokens
+ * ------------------------------------------------------------------ */
+@theme {
+  /* Fonts (CSS variables are wired up in app/layout.tsx via next/font) */
+  --font-pixel: var(--font-press-start), "Courier New", monospace;
+  --font-terminal: var(--font-vt323), "Courier New", monospace;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Courier New", monospace;
+  --font-sans: "Tahoma", "Verdana", "Segoe UI", system-ui, sans-serif;
+
+  /* Windows XP "Luna" chrome */
+  --color-xp-blue: #0a56d6;
+  --color-xp-blue-light: #3f8cf3;
+  --color-xp-blue-dark: #003bbb;
+  --color-xp-face: #ece9d8; /* classic 3D face / dialog beige */
+  --color-xp-face-dark: #d6d2bd;
+  --color-xp-shadow: #808080;
+  --color-xp-highlight: #ffffff;
+  --color-xp-selection: #316ac5;
+  --color-xp-desktop: #3a6ea5;
+
+  /* Taskbar / Start button greens */
+  --color-xp-taskbar: #245edb;
+  --color-xp-taskbar-dark: #1941a5;
+  --color-xp-start: #3c993c;
+  --color-xp-start-light: #59b559;
+  --color-xp-start-dark: #2b7a2b;
+
+  /* 16-bit RPG accents */
+  --color-rpg-parchment: #f4ecd8;
+  --color-rpg-ink: #2b2118;
+  --color-rpg-gold: #e8b23a;
+  --color-rpg-crimson: #a53030;
+  --color-rpg-emerald: #2f7d4f;
+  --color-rpg-sapphire: #2f5fae;
+  --color-rpg-shadow: #1a1206;
+}
+
+/* ------------------------------------------------------------------ *
+ * Base
+ * ------------------------------------------------------------------ */
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  color: var(--color-rpg-ink);
+  background-color: var(--color-xp-desktop);
+  /* "Bliss"-style rolling hills, drawn entirely in CSS */
+  background-image:
+    radial-gradient(120% 70% at 50% 120%, #7db84b 0%, #5aa03c 32%, transparent 60%),
+    radial-gradient(80% 45% at 15% 118%, #8fce5a 0%, transparent 55%),
+    radial-gradient(90% 50% at 88% 122%, #6fae42 0%, transparent 55%),
+    linear-gradient(180deg, #2a6bd6 0%, #4f97e6 40%, #9fd0f4 72%, #cde8f7 100%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Crisp pixel edges for sprites / pixel-art imagery */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ------------------------------------------------------------------ *
+ * Retro OS + RPG component layer
+ * ------------------------------------------------------------------ */
+@layer components {
+  /* Raised 3D bevel (buttons, panels) — Luna/Win9x style */
+  .bevel-raised {
+    border: 1px solid #0a0a0a;
+    box-shadow:
+      inset 1px 1px 0 0 var(--color-xp-highlight),
+      inset -1px -1px 0 0 var(--color-xp-shadow),
+      inset 2px 2px 0 0 var(--color-xp-face),
+      inset -2px -2px 0 0 var(--color-xp-face-dark);
+  }
+
+  /* Sunken 3D bevel (content wells, text inputs, list boxes) */
+  .bevel-sunken {
+    border: 1px solid var(--color-xp-shadow);
+    box-shadow:
+      inset 1px 1px 0 0 #0a0a0a,
+      inset -1px -1px 0 0 var(--color-xp-highlight),
+      inset 2px 2px 0 0 #45402d20;
+  }
+
+  /* Pressed state for a raised bevel */
+  .bevel-pressed {
+    border: 1px solid #0a0a0a;
+    box-shadow:
+      inset 1px 1px 0 0 var(--color-xp-shadow),
+      inset -1px -1px 0 0 var(--color-xp-highlight);
+  }
+
+  /* The window frame itself */
+  .xp-window {
+    background: var(--color-xp-face);
+    border: 1px solid #0831d9;
+    border-radius: 8px 8px 0 0;
+    box-shadow:
+      0 0 0 1px #0831d9,
+      6px 6px 0 0 rgba(0, 0, 0, 0.35),
+      0 10px 30px -6px rgba(0, 0, 0, 0.45);
+  }
+
+  /* Classic XP title bar: glossy blue gradient */
+  .xp-titlebar {
+    background: linear-gradient(
+      180deg,
+      #0e9bff 0%,
+      #1264d6 8%,
+      #0a56d6 40%,
+      #0a53d6 88%,
+      #0642b8 94%,
+      #002ea1 100%
+    );
+    border-radius: 7px 7px 0 0;
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.55);
+  }
+
+  .xp-titlebar-inactive {
+    background: linear-gradient(180deg, #7ea6e6 0%, #6b93d6 50%, #5b82c4 100%);
+  }
+
+  /* Title-bar control buttons ([_] [口] [X]) */
+  .xp-control-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    color: #fff;
+    background: linear-gradient(180deg, #3f8cf3 0%, #1e5fd6 45%, #1250c8 100%);
+    border: 1px solid #ffffffcc;
+    border-radius: 3px;
+    box-shadow: inset -1px -1px 0 0 #0a3aa8;
+  }
+  .xp-control-btn:hover {
+    background: linear-gradient(180deg, #67a8ff 0%, #337fe6 45%, #245fd6 100%);
+  }
+  .xp-control-btn:active {
+    background: linear-gradient(180deg, #1250c8 0%, #1e5fd6 55%, #3f8cf3 100%);
+  }
+  .xp-control-btn--close {
+    background: linear-gradient(180deg, #f79f7e 0%, #e0552f 45%, #c5391a 100%);
+    box-shadow: inset -1px -1px 0 0 #8f2410;
+  }
+  .xp-control-btn--close:hover {
+    background: linear-gradient(180deg, #ffb89c 0%, #ec6a44 45%, #d5472a 100%);
+  }
+
+  /* High-contrast content pane inside a window */
+  .xp-content {
+    background: #ffffff;
+    color: var(--color-rpg-ink);
+  }
+  .xp-content--parchment {
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent 0 27px,
+        rgba(120, 90, 40, 0.06) 27px 28px
+      ),
+      var(--color-rpg-parchment);
+    color: var(--color-rpg-ink);
+  }
+
+  /* Generic XP push button */
+  .xp-button {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    padding: 3px 12px;
+    background: linear-gradient(180deg, #fdfdfd 0%, #eceadb 45%, #d9d4bf 100%);
+    border: 1px solid #0a0a0a;
+    border-radius: 3px;
+    box-shadow:
+      inset 1px 1px 0 0 #ffffff,
+      inset -1px -1px 0 0 #9a9678;
+    cursor: pointer;
+  }
+  .xp-button:hover {
+    box-shadow:
+      inset 0 0 0 1px #f0a824,
+      inset 1px 1px 0 0 #ffffff,
+      inset -1px -1px 0 0 #9a9678;
+  }
+  .xp-button:active {
+    background: linear-gradient(180deg, #d9d4bf 0%, #eceadb 55%, #fdfdfd 100%);
+    box-shadow:
+      inset 1px 1px 0 0 #9a9678,
+      inset -1px -1px 0 0 #ffffff;
+  }
+  .xp-button--primary {
+    background: linear-gradient(180deg, #3f8cf3 0%, #1e5fd6 50%, #1250c8 100%);
+    color: #fff;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+  }
+
+  /* 16-bit pixel button (RPG menus) */
+  .rpg-button {
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.5px;
+    color: var(--color-rpg-parchment);
+    background: var(--color-rpg-sapphire);
+    padding: 8px 12px;
+    border: none;
+    box-shadow:
+      0 -4px 0 0 #1b3f7e inset,
+      0 0 0 3px var(--color-rpg-shadow),
+      0 0 0 6px var(--color-rpg-gold);
+    cursor: pointer;
+  }
+  .rpg-button:hover {
+    background: var(--color-rpg-emerald);
+  }
+  .rpg-button[data-active="true"] {
+    background: var(--color-rpg-crimson);
+  }
+
+  /* Pixel dialog frame (RPG text box) */
+  .rpg-frame {
+    background: var(--color-rpg-sapphire);
+    padding: 6px;
+    box-shadow:
+      0 0 0 3px var(--color-rpg-shadow),
+      0 0 0 6px var(--color-rpg-gold),
+      0 0 0 9px var(--color-rpg-shadow),
+      8px 8px 0 0 rgba(0, 0, 0, 0.4);
+  }
+  .rpg-frame__inner {
+    border: 2px solid var(--color-rpg-parchment);
+    background: var(--color-rpg-ink);
+    color: var(--color-rpg-parchment);
+    padding: 12px;
+  }
+
+  /* Hard pixel drop-shadow utility */
+  .pixel-shadow {
+    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.4);
+  }
+  .pixel-shadow-lg {
+    box-shadow: 6px 6px 0 0 rgba(0, 0, 0, 0.45);
+  }
+
+  /* Desktop shortcut icon + label */
+  .desktop-icon-label {
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+    font-size: 11px;
+    line-height: 1.2;
+  }
+  .desktop-icon[data-selected="true"] .desktop-icon-label {
+    background: var(--color-xp-selection);
+    box-shadow: 0 0 0 1px #a6c8ff;
+  }
+  .desktop-icon[data-selected="true"] .desktop-icon-art {
+    filter: drop-shadow(0 0 0 #316ac5);
+    background: rgba(49, 106, 197, 0.35);
+    outline: 1px dotted #cdddff;
+  }
+
+  /* Taskbar */
+  .xp-taskbar {
+    background: linear-gradient(
+      180deg,
+      #3b7de8 0%,
+      #2b6ade 8%,
+      #235fd4 42%,
+      #2361d8 88%,
+      #1c50c8 92%,
+      #1c50c8 100%
+    );
+    border-top: 1px solid #4f9bff;
+    box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.25);
+  }
+  .xp-start-button {
+    font-family: var(--font-pixel);
+    font-size: 12px;
+    font-style: italic;
+    color: #fff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    background: radial-gradient(120% 140% at 20% 20%, #7bd07b 0%, #3c993c 45%, #2b7a2b 100%);
+    border: 1px solid #1f5c1f;
+    border-radius: 0 10px 10px 0;
+    box-shadow:
+      inset 1px 1px 0 0 rgba(255, 255, 255, 0.5),
+      inset -2px -2px 4px 0 rgba(0, 0, 0, 0.25);
+  }
+  .xp-start-button[data-open="true"] {
+    box-shadow:
+      inset 2px 2px 4px 0 rgba(0, 0, 0, 0.35),
+      inset -1px -1px 0 0 rgba(255, 255, 255, 0.25);
+  }
+  .xp-tasktab {
+    background: linear-gradient(180deg, #3f83e8 0%, #2f6fd8 50%, #2a67d0 100%);
+    border: 1px solid #1b4aa8;
+    border-radius: 3px;
+    box-shadow: inset 1px 1px 0 0 rgba(255, 255, 255, 0.25);
+    color: #fff;
+  }
+  .xp-tasktab[data-active="true"] {
+    background: linear-gradient(180deg, #1c50c8 0%, #2a67d0 50%, #3f83e8 100%);
+    box-shadow: inset 2px 2px 3px 0 rgba(0, 0, 0, 0.4);
+  }
+  .xp-tray {
+    background: linear-gradient(180deg, #159ceb 0%, #1391e0 50%, #0d80d6 100%);
+    border-left: 1px solid #0d5bbf;
+    box-shadow: inset 1px 0 0 0 rgba(255, 255, 255, 0.35);
+  }
+
+  /* Quest rank badge */
+  .quest-rank {
+    font-family: var(--font-pixel);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    color: var(--color-rpg-ink);
+    background: var(--color-rpg-gold);
+    box-shadow:
+      0 0 0 2px var(--color-rpg-shadow),
+      3px 3px 0 0 rgba(0, 0, 0, 0.35);
+  }
+
+  /* Tech-stack "badge" chip */
+  .tech-badge {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 7px;
+    background: #1e1e28;
+    color: #8ef0c8;
+    border: 1px solid #3a3a4a;
+    box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.3);
+  }
+
+  /* Inventory slot */
+  .inv-slot {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
+      #3b3324;
+    border: 2px solid #6b5a3c;
+    box-shadow:
+      inset 2px 2px 0 0 rgba(0, 0, 0, 0.45),
+      inset -2px -2px 0 0 rgba(255, 255, 255, 0.08);
+  }
+}
+
+@layer utilities {
+  .font-pixel {
+    font-family: var(--font-pixel);
+  }
+  .font-terminal {
+    font-family: var(--font-terminal);
+  }
+  .text-shadow-hard {
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.35);
+  }
+  .scanlines {
+    background-image: repeating-linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.08) 0 1px,
+      transparent 1px 3px
+    );
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
+/* XP-style scrollbars for window content */
+.xp-scroll::-webkit-scrollbar {
+  width: 16px;
+  height: 16px;
+}
+.xp-scroll::-webkit-scrollbar-track {
+  background: #d8e0f0;
+  box-shadow: inset 1px 1px 0 0 #a0a0a0;
+}
+.xp-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d7e3ff 0%, #9db9e8 50%, #7f9fd8 100%);
+  border: 1px solid #4c74c0;
+}
+.xp-scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #e4edff 0%, #adc6ef 50%, #8fabe0 100%);
+}
+
+@keyframes radar-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes blip-fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+}
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes window-open {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-sweep,
+  .ticker-track {
+    animation: none !important;
+  }
+}
