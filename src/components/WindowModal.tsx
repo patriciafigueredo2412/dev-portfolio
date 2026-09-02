@@ -133,7 +133,7 @@ export function WindowModal({
       <div
         className={`xp-titlebar ${
           isFocused ? "" : "xp-titlebar-inactive"
-        } flex items-center gap-2 px-1.5 py-1 select-none ${
+        } flex items-center gap-2 px-1.5 py-1.5 select-none ${
           isMaximized ? "cursor-default" : isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
         onPointerDown={handlePointerDown}
@@ -142,8 +142,8 @@ export function WindowModal({
         onPointerCancel={endDrag}
         onDoubleClick={onMaximize}
       >
-        <Icon className="pixelated ml-0.5 h-4 w-4 shrink-0" aria-hidden />
-        <span className="font-pixel truncate text-[10px] leading-none">{title}</span>
+        <Icon className="pixelated ml-1 h-4 w-4 shrink-0" aria-hidden />
+        <span className="font-pixel truncate text-[11px] leading-none">{title}</span>
         <div className="ml-auto flex items-center gap-1">
           <button
             type="button"

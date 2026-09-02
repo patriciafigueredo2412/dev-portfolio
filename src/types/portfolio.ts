@@ -62,7 +62,7 @@ export interface SkillCategory {
 }
 
 /** Discriminates which mini-widget renders inside an easter-egg window. */
-export type EasterEggType = "shark-radar" | "dino-bin" | "guitar-player" | "climbing-log";
+export type EasterEggType = "shark-radar" | "dino-bin";
 
 export interface EasterEggModal {
   id: string;

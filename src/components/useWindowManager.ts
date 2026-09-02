@@ -9,10 +9,9 @@ const WINDOW_IDS: WindowId[] = [
   "quest-log",
   "overworld-map",
   "item-inventory",
+  "contact",
   "shark-radar",
   "dino-bin",
-  "guitar-player",
-  "climbing-log",
 ];
 
 /** Slightly offset each newly opened window so stacks stay visible. */

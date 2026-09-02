@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useState } from "react";
 
 import type { EasterEggModal, EasterEggType } from "@/types/portfolio";
 
@@ -99,114 +99,11 @@ function DinoBin() {
 }
 
 /* ------------------------------------------------------------------ *
- * Guitar Chord Player (Web Audio API)
- * ------------------------------------------------------------------ */
-const CHORDS: { name: string; freqs: number[] }[] = [
-  { name: "Em", freqs: [164.81, 196.0, 246.94, 329.63] },
-  { name: "G", freqs: [196.0, 246.94, 293.66, 392.0] },
-  { name: "D", freqs: [146.83, 220.0, 293.66, 369.99] },
-  { name: "C", freqs: [130.81, 196.0, 261.63, 329.63] },
-  { name: "Am", freqs: [220.0, 261.63, 329.63, 440.0] },
-];
-
-function GuitarPlayer() {
-  const audioRef = useRef<AudioContext | null>(null);
-  const [lastPlayed, setLastPlayed] = useState<string | null>(null);
-
-  const strum = useCallback((chord: (typeof CHORDS)[number]) => {
-    if (typeof window === "undefined") return;
-    const AudioContextCtor =
-      window.AudioContext ||
-      (window as unknown as { webkitAudioContext?: typeof AudioContext })
-        .webkitAudioContext;
-    if (!AudioContextCtor) return;
-
-    const ctx = audioRef.current ?? new AudioContextCtor();
-    audioRef.current = ctx;
-    if (ctx.state === "suspended") void ctx.resume();
-
-    const now = ctx.currentTime;
-    chord.freqs.forEach((freq, index) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "triangle";
-      osc.frequency.value = freq;
-      const start = now + index * 0.045;
-      gain.gain.setValueAtTime(0.0001, start);
-      gain.gain.exponentialRampToValueAtTime(0.22, start + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, start + 1.6);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(start);
-      osc.stop(start + 1.7);
-    });
-    setLastPlayed(chord.name);
-  }, []);
-
-  return (
-    <div className="bg-[#241a12] p-4 text-center font-sans">
-      <p className="font-terminal mb-3 text-[16px] text-[#e8b23a]">
-        {lastPlayed ? `♪ now ringing: ${lastPlayed}` : "pick a chord — audio starts on click"}
-      </p>
-      <div className="flex flex-wrap justify-center gap-2">
-        {CHORDS.map((chord) => (
-          <button
-            key={chord.name}
-            type="button"
-            className="rpg-button"
-            onClick={() => strum(chord)}
-          >
-            {chord.name}
-          </button>
-        ))}
-      </div>
-      <div className="mt-4 flex justify-center gap-1" aria-hidden>
-        {Array.from({ length: 6 }).map((_, index) => (
-          <span key={index} className="h-24 w-px bg-[#6b5a3c]" />
-        ))}
-      </div>
-      <p className="mt-2 font-mono text-[10px] text-[#8a7a5c]">
-        Progression I keep coming back to: Em – C – G – D
-      </p>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
- * Climbing Beta Log
- * ------------------------------------------------------------------ */
-const BETA_LOG = [
-  { date: "2026-08-19", route: "The Prow", grade: "V5", note: "Sent! Heel hook on the arête was the unlock." },
-  { date: "2026-08-12", route: "Slab Church", grade: "V4", note: "Feet, faith, and friction. No hands allowed past the crimp." },
-  { date: "2026-07-30", route: "Café Mocha", grade: "V6", note: "Project. Still spitting me off the dyno to the sloper." },
-  { date: "2026-07-15", route: "Tendon Roll", grade: "V3", note: "Flash. Good warm-up, mean name." },
-];
-
-function ClimbingLog() {
-  return (
-    <div className="bg-[#0f130f] p-4 font-terminal text-[16px] text-[#8ef0c8]">
-      <p className="text-[#4a8a6a]">/var/log/climbing/beta.log — tail -f</p>
-      <ul className="mt-2 space-y-2">
-        {BETA_LOG.map((entry) => (
-          <li key={entry.route} className="border-l-2 border-[#2f7d4f] pl-2">
-            <span className="text-[#4a8a6a]">[{entry.date}]</span>{" "}
-            <span className="text-[#e8ff6a]">{entry.grade}</span> · {entry.route}
-            <br />
-            <span className="text-[#7cc9a8]">↳ {entry.note}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ *
  * Dispatcher
  * ------------------------------------------------------------------ */
 const WIDGETS: Record<EasterEggType, () => React.ReactElement> = {
   "shark-radar": SharkRadar,
   "dino-bin": DinoBin,
-  "guitar-player": GuitarPlayer,
-  "climbing-log": ClimbingLog,
 };
 
 export function EasterEggContent({ egg }: { egg: EasterEggModal }) {

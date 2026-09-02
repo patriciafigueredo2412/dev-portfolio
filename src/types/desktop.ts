@@ -6,10 +6,9 @@ export type WindowId =
   | "quest-log"
   | "overworld-map"
   | "item-inventory"
+  | "contact"
   | "shark-radar"
-  | "dino-bin"
-  | "guitar-player"
-  | "climbing-log";
+  | "dino-bin";
 
 /** Groups desktop shortcuts so the primary apps sort above the easter eggs. */
 export type DesktopIconGroup = "app" | "easter-egg";

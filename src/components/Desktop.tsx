@@ -2,11 +2,12 @@
 
 import { type ReactNode, useState } from "react";
 
+import { PIXEL_ICONS, PixelDino, PixelSharkFin } from "@/components/PixelIcons";
 import { desktopIcons } from "@/data/desktopIcons";
 import type { WindowId } from "@/types/desktop";
 
 interface DesktopProps {
-  /** Called when a shortcut is activated (double-click / Enter). */
+  /** Called when a shortcut or terrain critter is activated. */
   onOpen: (id: WindowId) => void;
   /** The window layer — rendered above the wallpaper, below the taskbar. */
   children: ReactNode;
@@ -17,16 +18,15 @@ export function Desktop({ onOpen, children }: DesktopProps) {
 
   return (
     <main
-      className="scanlines relative h-full w-full overflow-hidden"
+      className="scanlines absolute inset-x-0 bottom-0 top-[34px] overflow-hidden"
       onPointerDown={(event) => {
-        // Clicking empty desktop clears icon selection.
         if (event.target === event.currentTarget) setSelected(null);
       }}
     >
       {/* Desktop shortcut icons */}
-      <ul className="absolute left-3 top-3 grid w-[76px] auto-rows-min gap-3">
+      <ul className="absolute left-2 top-3 grid w-[92px] auto-rows-min gap-3">
         {desktopIcons.map((icon) => {
-          const Icon = icon.icon;
+          const PixelIcon = PIXEL_ICONS[icon.id];
           const isSelected = selected === icon.id;
           return (
             <li key={icon.id}>
@@ -44,13 +44,10 @@ export function Desktop({ onOpen, children }: DesktopProps) {
                   }
                 }}
               >
-                <span className="desktop-icon-art grid h-10 w-10 place-items-center rounded-sm p-1">
-                  <Icon
-                    className="pixelated h-8 w-8 text-white drop-shadow-[1px_1px_1px_rgba(0,0,0,0.8)]"
-                    aria-hidden
-                  />
+                <span className="desktop-icon-art grid h-12 w-12 place-items-center rounded-sm p-0.5">
+                  <PixelIcon className="h-11 w-11" />
                 </span>
-                <span className="desktop-icon-label rounded-sm px-1 py-px">
+                <span className="desktop-icon-label max-w-full rounded px-1.5 py-0.5">
                   {icon.label}
                 </span>
               </button>
@@ -58,6 +55,26 @@ export function Desktop({ onOpen, children }: DesktopProps) {
           );
         })}
       </ul>
+
+      {/* Terrain easter eggs */}
+      <button
+        type="button"
+        aria-label="Poke the dinosaur"
+        title="Recycle Bin — Fossils"
+        className="terrain-critter absolute bottom-[13%] left-[46%] w-20"
+        onClick={() => onOpen("dino-bin")}
+      >
+        <PixelDino className="h-full w-full" />
+      </button>
+      <button
+        type="button"
+        aria-label="Investigate the shark fin"
+        title="Shark Radar.exe"
+        className="terrain-critter absolute bottom-[7%] right-[27%] w-[88px]"
+        onClick={() => onOpen("shark-radar")}
+      >
+        <PixelSharkFin className="h-full w-full" />
+      </button>
 
       {/* Window layer */}
       {children}

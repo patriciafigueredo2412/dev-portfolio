@@ -1,78 +1,122 @@
-import { Backpack } from "lucide-react";
+"use client";
+
+import { useState } from "react";
 
 import { skills } from "@/data/skills";
-import type { SkillLevel } from "@/types/portfolio";
+import type { SkillItem } from "@/types/portfolio";
 
-/** Loot rarity coloring, low → high. */
-const LEVEL_STYLES: Record<SkillLevel, { ring: string; label: string }> = {
-  Novice: { ring: "#8a8a8a", label: "COMMON" },
-  Apprentice: { ring: "#4a9a4a", label: "UNCOMMON" },
-  Journeyman: { ring: "#3f7fd6", label: "RARE" },
-  Expert: { ring: "#9a4fd0", label: "EPIC" },
-  Master: { ring: "#e8b23a", label: "LEGENDARY" },
+interface BadgeMeta {
+  abbr: string;
+  bg: string;
+  fg: string;
+}
+
+/** Brand-ish color + short tag for each skill's inventory badge. */
+const BADGE_META: Record<string, BadgeMeta> = {
+  HTML: { abbr: "HTML", bg: "#e34f26", fg: "#fff" },
+  CSS: { abbr: "CSS", bg: "#1572b6", fg: "#fff" },
+  JavaScript: { abbr: "JS", bg: "#f7df1e", fg: "#1b1b1b" },
+  TypeScript: { abbr: "TS", bg: "#3178c6", fg: "#fff" },
+  React: { abbr: "RE", bg: "#61dafb", fg: "#12324a" },
+  "Tailwind CSS": { abbr: "TW", bg: "#38bdf8", fg: "#0b3a52" },
+  Python: { abbr: "PY", bg: "#3776ab", fg: "#ffd43b" },
+  "Node.js": { abbr: "NODE", bg: "#5fa04e", fg: "#fff" },
+  FastAPI: { abbr: "API", bg: "#059488", fg: "#fff" },
+  SQL: { abbr: "SQL", bg: "#d9770a", fg: "#fff" },
+  "C#": { abbr: "C#", bg: "#68217a", fg: "#fff" },
+  PyTorch: { abbr: "TOR", bg: "#ee4c2c", fg: "#fff" },
+  "scikit-learn": { abbr: "SKL", bg: "#f7931e", fg: "#1b1b1b" },
+  "Multi-Agent Systems": { abbr: "MAS", bg: "#7a4fce", fg: "#fff" },
+  Qiskit: { abbr: "QSK", bg: "#6929c4", fg: "#fff" },
+  Git: { abbr: "GIT", bg: "#f05033", fg: "#fff" },
+  Docker: { abbr: "DKR", bg: "#2496ed", fg: "#fff" },
+  "Linux / Shell": { abbr: "SH", bg: "#2f2f2f", fg: "#7fe07f" },
+  PostgreSQL: { abbr: "PG", bg: "#336791", fg: "#fff" },
+  "Next.js": { abbr: "NX", bg: "#151515", fg: "#fff" },
 };
 
+const FALLBACK: BadgeMeta = { abbr: "?", bg: "#4a4a4a", fg: "#fff" };
+
+/** Which skills get a permanent RPG "Mastered!" callout, and its spell school. */
+const CALLOUTS: Record<string, string> = {
+  JavaScript: "web",
+  React: "web",
+  Git: "git",
+  Python: "data",
+};
+
+const COLS = 5;
+const CELL = 52;
+const GAP = 4;
+
+const flatSkills: SkillItem[] = skills.flatMap((category) => category.items);
+const TOTAL_SLOTS = Math.ceil(flatSkills.length / COLS) * COLS;
+
 export function ItemInventory() {
-  const total = skills.reduce((sum, category) => sum + category.items.length, 0);
+  const [hovered, setHovered] = useState<number | null>(null);
 
   return (
-    <div className="font-sans bg-[#2a2418] text-[#f4ecd8]">
-      <div className="flex items-center justify-between border-b-2 border-[#6b5a3c] bg-[#3b3324] p-3">
-        <h2 className="font-pixel flex items-center gap-2 text-[11px] text-[var(--color-rpg-gold)]">
-          <Backpack className="h-4 w-4" aria-hidden />
-          ITEM BAG
+    <div className="font-sans min-h-full bg-[#241d12] p-3 text-[#f4ecd8]">
+      <div className="mb-3 flex items-center justify-between border-b-2 border-[#6b5a3c] pb-2">
+        <h2 className="font-pixel text-[11px] text-[var(--color-rpg-gold)]">
+          SKILLS INVENTORY
         </h2>
-        <span className="font-terminal text-[16px] text-[#c9bd9a]">
-          {total} / {total} slots
+        <span className="font-terminal text-[15px] text-[#c9bd9a]">
+          {flatSkills.length} / {TOTAL_SLOTS} slots
         </span>
       </div>
 
-      <div className="space-y-4 p-3">
-        {skills.map((category) => (
-          <section key={category.category}>
-            <h3 className="font-pixel mb-2 text-[9px] text-[var(--color-rpg-gold)]">
-              &gt; {category.category}
-            </h3>
-            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-              {category.items.map((item) => {
-                const Icon = item.icon;
-                const style = LEVEL_STYLES[item.level];
-                return (
-                  <div
-                    key={item.name}
-                    className="inv-slot flex items-center gap-2 p-2"
-                    style={{ borderColor: style.ring }}
-                    title={`${item.name} — ${item.level}`}
+      {/* Inventory grid + anchored callouts */}
+      <div className="relative pr-[132px]">
+        <div
+          className="grid w-max"
+          style={{ gridTemplateColumns: `repeat(${COLS}, ${CELL}px)`, gap: GAP }}
+        >
+          {Array.from({ length: TOTAL_SLOTS }).map((_, index) => {
+            const item = flatSkills[index];
+            const meta = item ? (BADGE_META[item.name] ?? FALLBACK) : null;
+            const callout = item ? CALLOUTS[item.name] : undefined;
+            return (
+              <div
+                key={index}
+                className="inv-slot relative grid place-items-center"
+                style={{ width: CELL, height: CELL }}
+                onMouseEnter={() => setHovered(index)}
+                onMouseLeave={() => setHovered((h) => (h === index ? null : h))}
+                title={item ? `${item.name} — ${item.level}` : "Empty"}
+              >
+                {meta ? (
+                  <span
+                    className="font-pixel grid h-9 w-9 place-items-center border border-black/40 text-[7px] leading-none"
+                    style={{ background: meta.bg, color: meta.fg }}
                   >
-                    <span
-                      className="pixelated grid h-9 w-9 shrink-0 place-items-center bg-[#1f1a12]"
-                      style={{ boxShadow: `inset 0 0 0 2px ${style.ring}` }}
-                      aria-hidden
-                    >
-                      <Icon className="h-5 w-5" style={{ color: style.ring }} />
-                    </span>
-                    <span className="min-w-0">
-                      <span className="block truncate text-[12px] font-semibold">
-                        {item.name}
-                      </span>
-                      <span
-                        className="font-pixel block text-[7px]"
-                        style={{ color: style.ring }}
-                      >
-                        {style.label}
-                      </span>
-                    </span>
-                  </div>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+                    {meta.abbr}
+                  </span>
+                ) : null}
 
-        <p className="font-terminal border-t-2 border-[#6b5a3c] pt-2 text-[15px] text-[#c9bd9a]">
-          Tip: rarer loot (EPIC / LEGENDARY) marks the tools I reach for first.
-        </p>
+                {item && callout ? (
+                  <span className="inv-callout font-terminal absolute left-[44px] top-0 z-20 flex w-[126px] flex-col text-[13px] leading-[1.15]">
+                    <b className="font-sans text-[11px] font-bold">{item.name}</b>
+                    <span>Mastered!</span>
+                    <span>Allows {callout} spells</span>
+                  </span>
+                ) : null}
+
+                {item && hovered === index && !callout ? (
+                  <span className="inv-callout font-terminal absolute left-[44px] top-0 z-30 flex w-[118px] flex-col text-[13px] leading-[1.15]">
+                    <b className="font-sans text-[11px] font-bold">{item.name}</b>
+                    <span>{item.level}</span>
+                  </span>
+                ) : null}
+              </div>
+            );
+          })}
+        </div>
       </div>
+
+      <p className="font-terminal mt-3 border-t-2 border-[#6b5a3c] pt-2 text-[14px] text-[#c9bd9a]">
+        Hover a slot to inspect. Lettered tiles are the working kit.
+      </p>
     </div>
   );
 }
