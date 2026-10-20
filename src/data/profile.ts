@@ -5,7 +5,7 @@ export const profile: ProfileMetadata = {
   title: "Computer Science Student & Software Developer",
   statusBadge: "Available for Summer 2027 Internships",
   bioSummary:
-    "I'm a Computer Science student (4.0 GPA at Miami Dade College) and software developer who " +
+    "I'm a Computer Science student at Florida International University (4.0 GPA) and software developer who " +
     "loves building practical, reliable systems—from low-level embedded hardware to clean " +
     "software applications. With a foundation grounded in Harvard's CS50 and Oracle Java " +
     "certification, I combine strong analytical problem-solving with real-world operational " +

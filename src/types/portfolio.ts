@@ -9,6 +9,7 @@ import type { LucideIcon } from "lucide-react";
 
 export type ProjectCategory =
   | "Embedded Systems"
+  | "Machine Learning"
   | "Software Engineering"
   | "Automation"
   | "Web & Design";

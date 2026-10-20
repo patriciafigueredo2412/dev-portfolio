@@ -9,6 +9,7 @@ import type { Project, ProjectCategory, QuestRank } from "@/types/portfolio";
 const CATEGORIES: ("All" | ProjectCategory)[] = [
   "All",
   "Embedded Systems",
+  "Machine Learning",
   "Software Engineering",
   "Automation",
   "Web & Design",

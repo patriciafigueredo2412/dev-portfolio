@@ -1,4 +1,4 @@
-import { CalendarClock, Database, Gamepad2, LockKeyhole } from "lucide-react";
+import { CalendarClock, ClipboardList, Database, Gamepad2, House, LockKeyhole } from "lucide-react";
 
 import type { Project } from "@/types/portfolio";
 
@@ -32,6 +32,34 @@ export const projects: Project[] = [
     ],
     techStack: ["Python", "Scripting", "Office Automation Workflows"],
     icon: CalendarClock,
+  },
+  {
+    id: "housing-price-prediction",
+    title: "Housing Price Prediction",
+    category: "Machine Learning",
+    questRank: "A",
+    tagline: "A regression pipeline that predicts housing prices from 20,000 listings.",
+    architectureSummary: [
+      "Cleaned 20,000 listings: handled missing values, outliers, and feature encoding.",
+      "Compared Linear Regression, Ridge, Lasso, and Random Forest models to optimize performance, achieving an R² of 0.82.",
+      "Collaborated with a team of 4 using GitHub branches and pull requests.",
+    ],
+    techStack: ["Python", "scikit-learn", "pandas", "Anaconda", "Git"],
+    icon: House,
+  },
+  {
+    id: "rbt-supervision-manager",
+    title: "RBT Supervision Manager",
+    category: "Software Engineering",
+    questRank: "B",
+    tagline:
+      "A desktop app that replaces error-prone spreadsheets for managing RBT supervision records.",
+    architectureSummary: [
+      "Relational SQLite database managing records for multiple users, replacing error-prone manual spreadsheets.",
+      "Tkinter GUI designed for non-technical users, reducing administrative overhead by approximately 40%.",
+    ],
+    techStack: ["Python", "SQLite", "Tkinter"],
+    icon: ClipboardList,
   },
   {
     id: "student-database-system",
