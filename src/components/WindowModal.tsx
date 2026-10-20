@@ -188,7 +188,8 @@ export function WindowModal({
     : {
         left: position.x,
         top: position.y,
-        width: size.width,
+        // Never wider than the screen to the right of the window (phones).
+        width: `min(${size.width}px, calc(100vw - ${position.x}px - 8px))`,
         // Cap to the room left above the taskbar; the content well scrolls.
         height: `min(${size.height}px, calc(100dvh - ${TOP_BAR_HEIGHT + TASKBAR_HEIGHT + 8}px - ${position.y}px))`,
         minHeight: MIN_HEIGHT,

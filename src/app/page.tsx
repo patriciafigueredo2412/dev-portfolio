@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useEffect, useRef, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { ContactCard } from "@/components/ContactCard";
 import { Desktop } from "@/components/Desktop";
@@ -45,14 +45,33 @@ const WINDOW_CONFIG: WindowConfig[] = [
 
 const configById = new Map(WINDOW_CONFIG.map((entry) => [entry.id, entry] as const));
 
+/** Below this width the desktop can't fit windows side by side (phones). */
+const NARROW_SCREEN = 640;
+const NARROW_ORIGIN = { x: 8, y: 12 };
+
 export default function Home() {
   const wm = useWindowManager();
   const didAutoOpen = useRef(false);
   const [shutDownOpen, setShutDownOpen] = useState(false);
 
+  // On phones, open every window flush left so it gets the full screen width.
+  const { open, setPosition } = wm;
+  const openWindow = useCallback(
+    (id: WindowId) => {
+      if (window.innerWidth < NARROW_SCREEN) setPosition(id, NARROW_ORIGIN);
+      open(id);
+    },
+    [open, setPosition],
+  );
+
   useEffect(() => {
     if (didAutoOpen.current) return;
     didAutoOpen.current = true;
+
+    if (window.innerWidth < NARROW_SCREEN) {
+      openWindow("trainer-card");
+      return;
+    }
 
     const left = configById.get("trainer-card")!;
     const right = configById.get("item-inventory")!;
@@ -67,7 +86,7 @@ export default function Home() {
     // Open right first so the left window ends up focused / on top.
     wm.open("item-inventory");
     wm.open("trainer-card");
-  }, [wm]);
+  }, [wm, openWindow]);
 
   return (
     <>
@@ -81,7 +100,7 @@ export default function Home() {
         </span>
       </div>
 
-      <Desktop onOpen={wm.open}>
+      <Desktop onOpen={openWindow}>
         {WINDOW_CONFIG.map((config) => {
           const state = wm.windows[config.id];
           if (!state.isOpen) return null;
@@ -118,7 +137,7 @@ export default function Home() {
         windows={wm.windows}
         focusedId={wm.focusedId}
         onTabClick={wm.taskbarToggle}
-        onStartItemClick={wm.open}
+        onStartItemClick={openWindow}
         onShutDown={() => setShutDownOpen(true)}
       />
 
@@ -127,7 +146,7 @@ export default function Home() {
           onCancel={() => setShutDownOpen(false)}
           onLeaveRaven={() => {
             setShutDownOpen(false);
-            wm.open("contact");
+            openWindow("contact");
           }}
         />
       ) : null}
