@@ -1,5 +1,6 @@
 "use client";
 
+import { X } from "lucide-react";
 import { useState } from "react";
 
 import { Sprite } from "@/components/Sprite";
@@ -12,13 +13,27 @@ const LINES = [
   "Grab my resume from the About Me window. Safe travels!",
 ];
 
-export function DialogueBox() {
+interface DialogueBoxProps {
+  /** Hide the guide; it can be reopened from the taskbar's message icon. */
+  onClose: () => void;
+}
+
+export function DialogueBox({ onClose }: DialogueBoxProps) {
   const [index, setIndex] = useState(0);
   const advance = () => setIndex((i) => (i + 1) % LINES.length);
 
   return (
     <div className="pointer-events-auto fixed bottom-14 right-4 z-[1] w-[320px] max-w-[calc(100vw-2rem)]">
-      <div className="rpg-frame">
+      <div className="rpg-frame relative">
+        <button
+          type="button"
+          aria-label="Close guide"
+          title="Close (reopen from the taskbar)"
+          onClick={onClose}
+          className="xp-control-btn xp-control-btn--close absolute -right-2 -top-2 z-10 h-6 w-6"
+        >
+          <X className="h-3 w-3" aria-hidden />
+        </button>
         <div className="rpg-frame__inner flex items-start gap-3">
           <span className="grid h-14 w-14 shrink-0 place-items-center rounded border-2 border-[var(--color-quest-ink)] bg-[#cfe3f7]">
             <Sprite name="avatar" className="h-full w-full object-contain" />

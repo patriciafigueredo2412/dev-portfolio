@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe, Music2, Power, ShieldCheck, Volume2 } from "lucide-react";
+import { Globe, MessageSquareText, Music2, Power, ShieldCheck, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { desktopIcons, windowIcons, windowTitles } from "@/data/desktopIcons";
@@ -14,6 +14,9 @@ interface TaskbarProps {
   onTabClick: (id: WindowId) => void;
   onStartItemClick: (id: WindowId) => void;
   onShutDown: () => void;
+  /** Whether the guide's welcome dialogue is showing. */
+  guideOpen: boolean;
+  onToggleGuide: () => void;
 }
 
 function Clock() {
@@ -41,6 +44,8 @@ export function Taskbar({
   onTabClick,
   onStartItemClick,
   onShutDown,
+  guideOpen,
+  onToggleGuide,
 }: TaskbarProps) {
   const [startOpen, setStartOpen] = useState(false);
 
@@ -161,6 +166,23 @@ export function Taskbar({
 
       {/* System tray */}
       <div className="xp-tray flex items-center gap-2 px-3">
+        {/* Guide messages: hide/show the welcome dialogue */}
+        <button
+          type="button"
+          className="relative grid h-7 w-7 place-items-center rounded hover:bg-white/20"
+          aria-label={guideOpen ? "Hide guide messages" : "Show guide messages"}
+          aria-pressed={guideOpen}
+          title={guideOpen ? "Hide messages" : "Messages"}
+          onClick={onToggleGuide}
+        >
+          <MessageSquareText className="h-4 w-4 text-white" aria-hidden />
+          {guideOpen ? null : (
+            <span
+              className="absolute right-0.5 top-0.5 h-2 w-2 animate-pulse rounded-full border border-white bg-[var(--color-rpg-crimson)]"
+              aria-hidden
+            />
+          )}
+        </button>
         <ShieldCheck className="h-4 w-4 text-white" aria-hidden />
         <Globe className="h-4 w-4 text-white" aria-hidden />
         <Volume2 className="h-4 w-4 text-white" aria-hidden />

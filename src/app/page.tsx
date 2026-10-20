@@ -53,6 +53,7 @@ export default function Home() {
   const wm = useWindowManager();
   const didAutoOpen = useRef(false);
   const [shutDownOpen, setShutDownOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(true);
 
   // On phones, open every window flush left so it gets the full screen width.
   const { open, setPosition } = wm;
@@ -130,7 +131,7 @@ export default function Home() {
         })}
       </Desktop>
 
-      <DialogueBox />
+      {guideOpen ? <DialogueBox onClose={() => setGuideOpen(false)} /> : null}
 
       <Taskbar
         order={wm.order}
@@ -139,6 +140,8 @@ export default function Home() {
         onTabClick={wm.taskbarToggle}
         onStartItemClick={openWindow}
         onShutDown={() => setShutDownOpen(true)}
+        guideOpen={guideOpen}
+        onToggleGuide={() => setGuideOpen((open) => !open)}
       />
 
       {shutDownOpen ? (
