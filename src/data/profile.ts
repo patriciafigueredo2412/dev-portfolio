@@ -2,14 +2,17 @@ import type { ProfileMetadata } from "@/types/portfolio";
 
 export const profile: ProfileMetadata = {
   name: "Patricia Figueredo",
-  title: "Full-Stack Software Engineer & Applied AI",
+  title: "Computer Science Student & Software Developer",
   statusBadge: "Available for Summer 2027 Internships",
   bioSummary:
-    "Full-stack software engineer who ships end-to-end product: typed React/Next.js front ends, " +
-    "REST and streaming APIs, and the data layer underneath. Lately focused on multi-agent " +
-    "workflows — orchestrating LLM planners, tool-callers, and validators into systems that do " +
-    "real work — and on predictive systems that turn biosignals and user history into fast, " +
-    "reliable inference behind a clean API.",
+    "I'm a Computer Science student (4.0 GPA at Miami Dade College) and software developer who " +
+    "loves building practical, reliable systems—from low-level embedded hardware to clean " +
+    "software applications. With a foundation grounded in Harvard's CS50 and Oracle Java " +
+    "certification, I combine strong analytical problem-solving with real-world operational " +
+    "leadership. Whether automating administrative workflows that cut office wait times by 75% " +
+    "or engineering Bluetooth-controlled Arduino devices, I enjoy turning complex challenges " +
+    "into smooth, user-friendly solutions. Outside of coding, I'm fully bilingual in English and " +
+    "Spanish, conversational in ASL, and an avid fan of cozy retro RPGs.",
   location: "Miami, FL",
   resumePdfUrl: "/resume.pdf",
   statusMessage:
@@ -17,6 +20,6 @@ export const profile: ProfileMetadata = {
   socials: {
     email: "patricia241202@gmail.com",
     github: "https://github.com/patriciafigueredo2412",
-    linkedin: "https://www.linkedin.com/in/patricia-figueredo",
+    linkedin: "https://www.linkedin.com/in/patricia-figueredo-ventura-a72259233/",
   },
 };

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { Sprite } from "@/components/Sprite";
 import type { EasterEggModal, EasterEggType } from "@/types/portfolio";
 
 /* ------------------------------------------------------------------ *
@@ -32,23 +33,31 @@ function SharkRadar() {
             animation: "radar-sweep 4s linear infinite",
           }}
         />
-        {/* blips */}
+        {/* blips — each contact is a fin breaking the surface */}
         {RADAR_BLIPS.map((blip, index) => (
           <span
             key={index}
-            className="absolute h-2 w-2 rounded-full bg-[#e8ff6a] shadow-[0_0_8px_2px_#e8ff6a]"
+            className="absolute w-8 -translate-x-1/2 -translate-y-1/2 drop-shadow-[0_0_4px_#4bf08a]"
             style={{
               top: blip.top,
               left: blip.left,
               animation: `blip-fade 4s linear ${blip.delay} infinite`,
             }}
-          />
+          >
+            <Sprite name="shark-fin" className="h-auto w-full" />
+          </span>
         ))}
       </div>
       <p className="mt-3">CONTACTS: {RADAR_BLIPS.length} &nbsp;|&nbsp; RANGE: 3 NM</p>
       <p className="text-[#2ea15c]">
         Advisory: all contacts fictional. Swim responsibly.
       </p>
+      {/* Patrol lane */}
+      <div className="relative mt-3 h-12 overflow-hidden border-2 border-[#0f7a3d] bg-[repeating-linear-gradient(0deg,#04304a_0_3px,#063a5a_3px_6px)]">
+        <span className="shark-patrol absolute top-1 w-20">
+          <Sprite name="shark" className="h-auto w-full" />
+        </span>
+      </div>
     </div>
   );
 }
@@ -66,33 +75,43 @@ const FOSSILS = [
 ];
 
 function DinoBin() {
-  const [excavated, setExcavated] = useState<string | null>(null);
+  const [excavated, setExcavated] = useState<(typeof FOSSILS)[number] | null>(null);
   return (
     <div className="p-4 font-sans text-[12px]">
       <p className="mb-3 text-[#3a3a3a]">
         Deleted files, fossilized. Click one to excavate.
       </p>
       <div className="grid grid-cols-3 gap-2">
-        {FOSSILS.map((fossil) => (
-          <button
-            key={fossil.file}
-            type="button"
-            className="bevel-sunken flex flex-col items-center gap-1 bg-[#efe7d2] p-2 text-center"
-            onClick={() => setExcavated(fossil.joke)}
-          >
-            <span className="text-2xl" aria-hidden>
-              🦴
-            </span>
-            <span className="font-mono text-[9px] leading-tight break-all">
-              {fossil.file}
-            </span>
-          </button>
-        ))}
+        {FOSSILS.map((fossil) => {
+          const dug = excavated?.file === fossil.file;
+          return (
+            <button
+              key={fossil.file}
+              type="button"
+              className="quest-card flex flex-col items-center gap-1 p-2 text-center hover:-translate-y-0.5"
+              data-active={dug}
+              onClick={() => setExcavated(fossil)}
+            >
+              <Sprite name="fossil" className="h-auto w-12" />
+              <span className="font-mono text-[9px] leading-tight break-all">
+                {fossil.file}
+              </span>
+            </button>
+          );
+        })}
       </div>
       <div className="rpg-frame mt-4">
-        <p className="rpg-frame__inner font-terminal text-[16px]">
-          {excavated ?? "> awaiting excavation..."}
-        </p>
+        <div className="rpg-frame__inner flex items-center gap-3">
+          <Sprite
+            name={excavated ? "dino-icon" : "fossil"}
+            className={`h-auto w-16 shrink-0 ${excavated ? "critter-idle" : "opacity-70"}`}
+          />
+          <p className="font-terminal text-[17px] leading-tight">
+            {excavated
+              ? `"${excavated.joke}"`
+              : "> awaiting excavation... something is buried here."}
+          </p>
+        </div>
       </div>
     </div>
   );

@@ -2,9 +2,19 @@
 
 import { type ReactNode, useState } from "react";
 
-import { PIXEL_ICONS, PixelDino, PixelSharkFin } from "@/components/PixelIcons";
+import { PIXEL_ICONS } from "@/components/PixelIcons";
+import { R2Unit } from "@/components/R2Unit";
+import { Sprite, type SpriteName } from "@/components/Sprite";
 import { desktopIcons } from "@/data/desktopIcons";
 import type { WindowId } from "@/types/desktop";
+
+/** Shortcuts drawn with bitmap pixel icons; the rest use the SVG sprites. */
+const SHORTCUT_SPRITES: Partial<Record<WindowId, SpriteName>> = {
+  "quest-log": "chest",
+  "overworld-map": "resume",
+  "item-inventory": "backpack",
+  "trainer-card": "avatar",
+};
 
 interface DesktopProps {
   /** Called when a shortcut or terrain critter is activated. */
@@ -24,12 +34,12 @@ export function Desktop({ onOpen, children }: DesktopProps) {
       }}
     >
       {/* Desktop shortcut icons */}
-      <ul className="absolute left-2 top-3 grid w-[92px] auto-rows-min gap-3">
+      <ul className="absolute bottom-14 left-2 top-3 flex flex-col flex-wrap content-start gap-3">
         {desktopIcons.map((icon) => {
           const PixelIcon = PIXEL_ICONS[icon.id];
           const isSelected = selected === icon.id;
           return (
-            <li key={icon.id}>
+            <li key={icon.id} className="w-[92px]">
               <button
                 type="button"
                 className="desktop-icon group flex w-full flex-col items-center gap-1 rounded p-1 text-center outline-none"
@@ -45,7 +55,11 @@ export function Desktop({ onOpen, children }: DesktopProps) {
                 }}
               >
                 <span className="desktop-icon-art grid h-12 w-12 place-items-center rounded-sm p-0.5">
-                  <PixelIcon className="h-11 w-11" />
+                  {SHORTCUT_SPRITES[icon.id] ? (
+                    <Sprite name={SHORTCUT_SPRITES[icon.id]!} className="h-11 w-auto" />
+                  ) : (
+                    <PixelIcon className="h-11 w-11" />
+                  )}
                 </span>
                 <span className="desktop-icon-label max-w-full rounded px-1.5 py-0.5">
                   {icon.label}
@@ -60,21 +74,23 @@ export function Desktop({ onOpen, children }: DesktopProps) {
       <button
         type="button"
         aria-label="Poke the dinosaur"
-        title="Recycle Bin — Fossils"
-        className="terrain-critter absolute bottom-[13%] left-[46%] w-20"
+        className="terrain-critter group absolute left-[max(9%,120px)] top-[27%] w-11"
         onClick={() => onOpen("dino-bin")}
       >
-        <PixelDino className="h-full w-full" />
+        <span className="critter-bubble critter-bubble--left font-pixel">RAWR! Dig up my fossils?</span>
+        <Sprite name="dino" className="critter-idle h-auto w-full" />
       </button>
       <button
         type="button"
         aria-label="Investigate the shark fin"
-        title="Shark Radar.exe"
-        className="terrain-critter absolute bottom-[7%] right-[27%] w-[88px]"
+        className="terrain-critter group absolute bottom-[6%] right-[26%] w-16"
         onClick={() => onOpen("shark-radar")}
       >
-        <PixelSharkFin className="h-full w-full" />
+        <span className="critter-bubble font-pixel">Land shark spotted. Open radar?</span>
+        <Sprite name="shark-fin" className="critter-bob h-auto w-full" />
       </button>
+
+      <R2Unit className="absolute bottom-[13%] left-[22%] w-16" />
 
       {/* Window layer */}
       {children}

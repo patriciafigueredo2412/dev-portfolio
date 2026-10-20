@@ -1,6 +1,6 @@
 "use client";
 
-import { Globe, Music2, ShieldCheck, Volume2 } from "lucide-react";
+import { Globe, Music2, Power, ShieldCheck, Volume2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { desktopIcons, windowIcons, windowTitles } from "@/data/desktopIcons";
@@ -13,6 +13,7 @@ interface TaskbarProps {
   focusedId: WindowId | null;
   onTabClick: (id: WindowId) => void;
   onStartItemClick: (id: WindowId) => void;
+  onShutDown: () => void;
 }
 
 function Clock() {
@@ -39,6 +40,7 @@ export function Taskbar({
   focusedId,
   onTabClick,
   onStartItemClick,
+  onShutDown,
 }: TaskbarProps) {
   const [startOpen, setStartOpen] = useState(false);
 
@@ -109,6 +111,22 @@ export function Taskbar({
                 );
               })}
             </ul>
+            {/* XP-style footer: Shut Down */}
+            <div className="xp-titlebar mt-1 flex justify-end px-2 py-1.5">
+              <button
+                type="button"
+                className="font-sans flex items-center gap-1.5 rounded px-2 py-1 text-[12px] text-white hover:bg-white/20"
+                onClick={() => {
+                  setStartOpen(false);
+                  onShutDown();
+                }}
+              >
+                <span className="grid h-5 w-5 place-items-center rounded-[4px] border border-white/80 bg-[linear-gradient(180deg,#f79f7e_0%,#e0552f_45%,#c5391a_100%)]">
+                  <Power className="h-3 w-3" aria-hidden />
+                </span>
+                Shut Down
+              </button>
+            </div>
           </div>
         ) : null}
       </div>

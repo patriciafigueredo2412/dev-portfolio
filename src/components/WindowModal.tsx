@@ -35,6 +35,24 @@ interface WindowModalProps {
 }
 
 const TASKBAR_HEIGHT = 40;
+/** The full-width XP title bar above the desktop (see app/page.tsx). */
+const TOP_BAR_HEIGHT = 34;
+const MIN_WIDTH = 280;
+const MIN_HEIGHT = 160;
+
+/** Which edges a resize handle moves: n/s/e/w and the four corners. */
+type ResizeEdge = "n" | "s" | "e" | "w" | "ne" | "nw" | "se" | "sw";
+
+const RESIZE_HANDLES: { edge: ResizeEdge; className: string; cursor: string }[] = [
+  { edge: "n", className: "-top-1 left-2 right-2 h-2", cursor: "ns-resize" },
+  { edge: "s", className: "-bottom-1 left-2 right-2 h-2", cursor: "ns-resize" },
+  { edge: "e", className: "-right-1 top-2 bottom-2 w-2", cursor: "ew-resize" },
+  { edge: "w", className: "-left-1 top-2 bottom-2 w-2", cursor: "ew-resize" },
+  { edge: "ne", className: "-right-1 -top-1 h-3 w-3", cursor: "nesw-resize" },
+  { edge: "sw", className: "-bottom-1 -left-1 h-3 w-3", cursor: "nesw-resize" },
+  { edge: "nw", className: "-left-1 -top-1 h-3 w-3", cursor: "nwse-resize" },
+  { edge: "se", className: "-bottom-1 -right-1 h-3 w-3", cursor: "nwse-resize" },
+];
 
 export function WindowModal({
   title,
@@ -58,6 +76,65 @@ export function WindowModal({
     null,
   );
   const [isDragging, setIsDragging] = useState(false);
+  /** Current size — starts at the configured size, then follows edge drags. */
+  const [size, setSize] = useState({ width, height });
+  const resizeState = useRef<{
+    pointerId: number;
+    edge: ResizeEdge;
+    startX: number;
+    startY: number;
+    rect: { x: number; y: number; width: number; height: number };
+  } | null>(null);
+
+  const startResize = useCallback(
+    (edge: ResizeEdge, event: ReactPointerEvent<HTMLDivElement>) => {
+      if (isMaximized) return;
+      event.stopPropagation();
+      // Measure the rendered box: height may currently be capped by the viewport.
+      const frame = event.currentTarget.parentElement!.getBoundingClientRect();
+      resizeState.current = {
+        pointerId: event.pointerId,
+        edge,
+        startX: event.clientX,
+        startY: event.clientY,
+        rect: { x: position.x, y: position.y, width: frame.width, height: frame.height },
+      };
+      event.currentTarget.setPointerCapture(event.pointerId);
+      onFocus();
+    },
+    [isMaximized, onFocus, position.x, position.y],
+  );
+
+  const moveResize = useCallback(
+    (event: ReactPointerEvent<HTMLDivElement>) => {
+      const state = resizeState.current;
+      if (!state || state.pointerId !== event.pointerId) return;
+      const dx = event.clientX - state.startX;
+      const dy = event.clientY - state.startY;
+      const { rect, edge } = state;
+      let { x, y, width: w, height: h } = rect;
+
+      if (edge.includes("e")) w = rect.width + dx;
+      if (edge.includes("s")) h = rect.height + dy;
+      if (edge.includes("w")) {
+        w = Math.max(MIN_WIDTH, rect.width - dx);
+        x = rect.x + rect.width - w;
+      }
+      if (edge.includes("n")) {
+        // Don't let the top edge climb above the desktop.
+        h = Math.max(MIN_HEIGHT, Math.min(rect.height - dy, rect.y + rect.height));
+        y = rect.y + rect.height - h;
+      }
+
+      setSize({ width: Math.max(MIN_WIDTH, w), height: Math.max(MIN_HEIGHT, h) });
+      if (x !== rect.x || y !== rect.y) onDrag({ x, y });
+    },
+    [onDrag],
+  );
+
+  const endResize = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
+    if (resizeState.current?.pointerId === event.pointerId) resizeState.current = null;
+  }, []);
 
   const handlePointerDown = useCallback(
     (event: ReactPointerEvent<HTMLDivElement>) => {
@@ -82,11 +159,11 @@ export function WindowModal({
       if (!state || state.pointerId !== event.pointerId) return;
       const maxX = window.innerWidth - 80;
       const maxY = window.innerHeight - TASKBAR_HEIGHT - 24;
-      const nextX = Math.min(Math.max(event.clientX - state.offsetX, -width + 120), maxX);
+      const nextX = Math.min(Math.max(event.clientX - state.offsetX, -size.width + 120), maxX);
       const nextY = Math.min(Math.max(event.clientY - state.offsetY, 0), maxY);
       onDrag({ x: nextX, y: nextY });
     },
-    [onDrag, width],
+    [onDrag, size.width],
   );
 
   const endDrag = useCallback((event: ReactPointerEvent<HTMLDivElement>) => {
@@ -111,8 +188,10 @@ export function WindowModal({
     : {
         left: position.x,
         top: position.y,
-        width,
-        height,
+        width: size.width,
+        // Cap to the room left above the taskbar; the content well scrolls.
+        height: `min(${size.height}px, calc(100dvh - ${TOP_BAR_HEIGHT + TASKBAR_HEIGHT + 8}px - ${position.y}px))`,
+        minHeight: MIN_HEIGHT,
         zIndex,
       };
 
@@ -129,6 +208,21 @@ export function WindowModal({
       }}
       onPointerDown={onFocus}
     >
+      {/* Edge + corner grips for resizing */}
+      {isMaximized
+        ? null
+        : RESIZE_HANDLES.map((handle) => (
+            <div
+              key={handle.edge}
+              aria-hidden
+              className={`absolute z-10 touch-none ${handle.className}`}
+              style={{ cursor: handle.cursor }}
+              onPointerDown={(event) => startResize(handle.edge, event)}
+              onPointerMove={moveResize}
+              onPointerUp={endResize}
+              onPointerCancel={endResize}
+            />
+          ))}
       {/* Title bar */}
       <div
         className={`xp-titlebar ${
@@ -177,7 +271,7 @@ export function WindowModal({
       </div>
 
       {/* Content well */}
-      <div className="flex-1 overflow-hidden p-[3px] pt-0">
+      <div className="flex-1 overflow-hidden p-1">
         <div
           className={`xp-scroll bevel-sunken h-full overflow-y-auto ${
             surface === "parchment" ? "xp-content--parchment" : "xp-content"

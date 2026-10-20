@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { PixelAvatar } from "@/components/PixelIcons";
+import { Sprite } from "@/components/Sprite";
 
 const LINES = [
   "Welcome! Explore my pixel portfolio!",
@@ -17,14 +17,14 @@ export function DialogueBox() {
   const advance = () => setIndex((i) => (i + 1) % LINES.length);
 
   return (
-    <div className="pointer-events-auto fixed bottom-14 right-4 z-[900] w-[320px] max-w-[calc(100vw-2rem)]">
+    <div className="pointer-events-auto fixed bottom-14 right-4 z-[1] w-[320px] max-w-[calc(100vw-2rem)]">
       <div className="rpg-frame">
         <div className="rpg-frame__inner flex items-start gap-3">
-          <span className="grid h-14 w-14 shrink-0 place-items-center border-2 border-[var(--color-rpg-parchment)] bg-[#1c2a52]">
-            <PixelAvatar className="h-full w-full" />
+          <span className="grid h-14 w-14 shrink-0 place-items-center rounded border-2 border-[var(--color-quest-ink)] bg-[#cfe3f7]">
+            <Sprite name="avatar" className="h-full w-full object-contain" />
           </span>
           <div className="min-h-[3.5rem] flex-1">
-            <p className="font-terminal text-[18px] leading-tight text-[var(--color-rpg-parchment)]">
+            <p className="font-terminal text-[18px] leading-tight text-[var(--color-quest-ink)]">
               &quot;{LINES[index]}&quot;
             </p>
           </div>

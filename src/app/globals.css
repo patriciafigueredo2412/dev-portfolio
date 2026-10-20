@@ -36,6 +36,11 @@
   --color-rpg-emerald: #2f7d4f;
   --color-rpg-sapphire: #2f5fae;
   --color-rpg-shadow: #1a1206;
+
+  /* Quest-log mockup palette */
+  --color-quest-parchment: #f3ead2;
+  --color-quest-ink: #3a2e1f;
+  --color-quest-navy: #0a2a78;
 }
 
 /* ------------------------------------------------------------------ *
@@ -51,8 +56,9 @@ body {
   font-family: var(--font-sans);
   color: var(--color-rpg-ink);
   /* 16-bit pixel landscape — Bliss meets a Zelda overworld */
-  background-color: #4c9ae9;
-  background-image: url("/wallpaper.svg");
+  background-color: #3d8fe6;
+  background-image: url("/wallpaper.webp");
+  image-rendering: pixelated;
   background-size: cover;
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -99,14 +105,16 @@ body {
   }
 
   /* The window frame itself */
+  /* Chunky Luna frame: thick royal-blue border with a light inner rim */
   .xp-window {
     background: var(--color-xp-face);
-    border: 1px solid #0831d9;
-    border-radius: 8px 8px 0 0;
+    border: 4px solid #0b4fd8;
+    border-radius: 12px 12px 4px 4px;
     box-shadow:
-      0 0 0 1px #0831d9,
-      6px 6px 0 0 rgba(0, 0, 0, 0.35),
-      0 10px 30px -6px rgba(0, 0, 0, 0.45);
+      inset 0 0 0 1px #7fb2ff,
+      0 0 0 2px #06318f,
+      8px 8px 0 0 rgba(0, 20, 60, 0.35),
+      0 14px 34px -8px rgba(0, 0, 0, 0.5);
   }
 
   /* Classic XP title bar: glossy blue gradient */
@@ -120,8 +128,10 @@ body {
       #0642b8 94%,
       #002ea1 100%
     );
-    border-radius: 7px 7px 0 0;
-    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+    border-radius: 8px 8px 0 0;
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.45),
+      inset 0 -2px 0 0 rgba(0, 20, 90, 0.35);
     color: #fff;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.55);
   }
@@ -135,12 +145,12 @@ body {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     color: #fff;
     background: linear-gradient(180deg, #3f8cf3 0%, #1e5fd6 45%, #1250c8 100%);
-    border: 1px solid #ffffffcc;
-    border-radius: 3px;
+    border: 2px solid #ffffffdd;
+    border-radius: 4px;
     box-shadow: inset -1px -1px 0 0 #0a3aa8;
   }
   .xp-control-btn:hover {
@@ -159,7 +169,7 @@ body {
 
   /* High-contrast content pane inside a window */
   .xp-content {
-    background: #ffffff;
+    background: var(--color-xp-face);
     color: var(--color-rpg-ink);
   }
   .xp-content--parchment {
@@ -204,44 +214,129 @@ body {
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
   }
 
-  /* 16-bit pixel button (RPG menus) */
+  /* 16-bit pixel button (RPG menus) — beige tab, blue when selected */
   .rpg-button {
     font-family: var(--font-pixel);
-    font-size: 10px;
+    font-size: 9px;
     line-height: 1.4;
     letter-spacing: 0.5px;
-    color: var(--color-rpg-parchment);
-    background: var(--color-rpg-sapphire);
-    padding: 8px 12px;
-    border: none;
+    color: var(--color-quest-navy);
+    background: linear-gradient(180deg, #fffaf0 0%, #efe6cf 100%);
+    padding: 7px 10px;
+    border: 2px solid var(--color-quest-navy);
+    border-radius: 4px;
     box-shadow:
-      0 -4px 0 0 #1b3f7e inset,
-      0 0 0 3px var(--color-rpg-shadow),
-      0 0 0 6px var(--color-rpg-gold);
+      inset -2px -2px 0 0 #cfc3a2,
+      2px 2px 0 0 rgba(0, 0, 0, 0.25);
     cursor: pointer;
   }
   .rpg-button:hover {
-    background: var(--color-rpg-emerald);
+    background: linear-gradient(180deg, #fff7d6 0%, #f6e3a8 100%);
   }
   .rpg-button[data-active="true"] {
-    background: var(--color-rpg-crimson);
+    color: #fff;
+    background: linear-gradient(180deg, #2f7cf0 0%, #0b4fd8 100%);
+    box-shadow:
+      inset 2px 2px 0 0 rgba(0, 0, 0, 0.25),
+      2px 2px 0 0 rgba(0, 0, 0, 0.25);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.45);
   }
 
-  /* Pixel dialog frame (RPG text box) */
+  /* RPG text box — blue Luna frame around a parchment page */
   .rpg-frame {
-    background: var(--color-rpg-sapphire);
-    padding: 6px;
+    background: linear-gradient(180deg, #2f7cf0 0%, #0b4fd8 100%);
+    padding: 5px;
+    border: 2px solid var(--color-quest-navy);
+    border-radius: 8px;
     box-shadow:
-      0 0 0 3px var(--color-rpg-shadow),
-      0 0 0 6px var(--color-rpg-gold),
-      0 0 0 9px var(--color-rpg-shadow),
-      8px 8px 0 0 rgba(0, 0, 0, 0.4);
+      inset 0 0 0 1px #7fb2ff,
+      6px 6px 0 0 rgba(0, 20, 60, 0.35);
   }
   .rpg-frame__inner {
-    border: 2px solid var(--color-rpg-parchment);
-    background: var(--color-rpg-ink);
-    color: var(--color-rpg-parchment);
+    border: 2px solid var(--color-quest-ink);
+    border-radius: 4px;
+    background: var(--color-quest-parchment);
+    color: var(--color-quest-ink);
     padding: 12px;
+    box-shadow: inset -2px -2px 0 0 #d8ccaa;
+  }
+
+  /* Inner panel with a glossy blue header strip ("Quests", "Inventory") */
+  .xp-panel {
+    background: #e7e0cb;
+    border: 3px solid #0b4fd8;
+    border-radius: 8px;
+    box-shadow:
+      inset 0 0 0 1px #7fb2ff,
+      0 0 0 1px var(--color-quest-navy);
+    /* clip (not hidden) so sticky headers inside still stick to the window */
+    overflow: clip;
+  }
+  .xp-panel__header {
+    font-family: var(--font-pixel);
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    color: #fff;
+    padding: 8px 10px;
+    background: linear-gradient(180deg, #2f7cf0 0%, #0b4fd8 55%, #0a46c4 100%);
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+    border-bottom: 2px solid var(--color-quest-navy);
+  }
+
+  /* Parchment quest card with a dark ink outline */
+  .quest-card {
+    background: var(--color-quest-parchment);
+    color: var(--color-quest-ink);
+    border: 2px solid var(--color-quest-ink);
+    border-radius: 5px;
+    box-shadow:
+      inset 2px 2px 0 0 #fffaf0,
+      inset -2px -2px 0 0 #d8ccaa,
+      3px 3px 0 0 rgba(0, 0, 0, 0.25);
+    transition: transform 80ms ease-out;
+  }
+  .quest-card[data-active="true"] {
+    background: #fff4c8;
+    box-shadow:
+      inset 0 0 0 2px var(--color-rpg-gold),
+      3px 3px 0 0 rgba(0, 0, 0, 0.25);
+  }
+
+  /* Segmented XP / HP / MP bar */
+  .xp-bar {
+    position: relative;
+    height: 16px;
+    background: #2a3d8f;
+    border: 2px solid var(--color-quest-ink);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .xp-bar__fill {
+    height: 100%;
+    background:
+      repeating-linear-gradient(90deg, transparent 0 7px, rgba(0, 0, 0, 0.18) 7px 8px),
+      linear-gradient(180deg, #7ef07a 0%, #2fbf3a 55%, #1f9a2c 100%);
+  }
+  .xp-bar__fill--hp {
+    background:
+      repeating-linear-gradient(90deg, transparent 0 7px, rgba(0, 0, 0, 0.18) 7px 8px),
+      linear-gradient(180deg, #ff8a8a 0%, #e0312f 55%, #b81f1f 100%);
+  }
+  .xp-bar__fill--mp {
+    background:
+      repeating-linear-gradient(90deg, transparent 0 7px, rgba(0, 0, 0, 0.18) 7px 8px),
+      linear-gradient(180deg, #8fe0ff 0%, #2fa3f0 55%, #1b74c8 100%);
+  }
+  .xp-bar__label {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-terminal);
+    font-size: 14px;
+    line-height: 1;
+    color: #fff;
+    text-shadow: 1px 1px 0 #000;
   }
 
   /* Hard pixel drop-shadow utility */
@@ -302,23 +397,64 @@ body {
   .terrain-critter:active {
     transform: translateY(0) scale(0.98);
   }
-
-  /* RPG "Mastered!" speech callout in the skills inventory */
-  .inv-callout {
-    background: var(--color-rpg-parchment);
-    color: var(--color-rpg-ink);
-    padding: 4px 6px;
-    border: 2px solid var(--color-rpg-ink);
-    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.35);
+  /* Pixel speech bubble that pops over a critter on hover / focus */
+  .critter-bubble {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    width: max-content;
+    max-width: 170px;
+    transform: translateX(-50%);
+    padding: 6px 8px;
+    font-size: 8px;
+    line-height: 1.5;
+    text-align: center;
+    color: var(--color-quest-ink);
+    background: var(--color-quest-parchment);
+    border: 2px solid var(--color-quest-ink);
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.3);
+    opacity: 0;
     pointer-events: none;
+    transition: opacity 90ms steps(2);
   }
-  .inv-callout::before {
+  .critter-bubble::after {
     content: "";
     position: absolute;
-    left: -7px;
-    top: 10px;
-    border: 5px solid transparent;
-    border-right-color: var(--color-rpg-ink);
+    top: 100%;
+    left: 50%;
+    margin-left: -6px;
+    border: 6px solid transparent;
+    border-top-color: var(--color-quest-ink);
+  }
+  /* Variant that grows leftward from the critter (for spots near a window) */
+  .critter-bubble--left {
+    left: auto;
+    right: -4px;
+    transform: none;
+  }
+  .critter-bubble--left::after {
+    left: auto;
+    right: 14px;
+    margin-left: 0;
+  }
+  .terrain-critter:hover .critter-bubble,
+  .terrain-critter:focus-visible .critter-bubble,
+  .terrain-critter[data-talking="true"] .critter-bubble {
+    opacity: 1;
+  }
+  /* R2 rocks side to side while he chatters */
+  .r2-wobble {
+    animation: r2-wobble 0.36s steps(2) infinite;
+  }
+  .critter-idle {
+    animation: critter-idle 1.2s steps(2) infinite;
+  }
+  .critter-bob {
+    animation: critter-bob 2.4s steps(4) infinite;
+  }
+  .shark-patrol {
+    animation: shark-patrol 7s linear infinite;
   }
 
   /* Taskbar */
@@ -397,15 +533,28 @@ body {
     box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.3);
   }
 
-  /* Inventory slot */
+  /* Inventory slot — steel-blue tile, gold when mastered */
   .inv-slot {
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, transparent 45%),
-      #3b3324;
-    border: 2px solid #6b5a3c;
+    background: linear-gradient(160deg, #a9b6d0 0%, #7f8fb2 55%, #6a7aa0 100%);
+    border: 2px solid var(--color-quest-navy);
+    border-radius: 5px;
     box-shadow:
-      inset 2px 2px 0 0 rgba(0, 0, 0, 0.45),
-      inset -2px -2px 0 0 rgba(255, 255, 255, 0.08);
+      inset 2px 2px 0 0 rgba(255, 255, 255, 0.45),
+      inset -2px -2px 0 0 rgba(0, 0, 0, 0.25);
+  }
+  .inv-slot--empty {
+    background: linear-gradient(160deg, #b8b5aa 0%, #a19d90 100%);
+    border-color: #6f6a5c;
+  }
+  .inv-slot[data-rarity="Master"] {
+    background: linear-gradient(160deg, #fff1b0 0%, #f2c94c 50%, #d99a1c 100%);
+  }
+  .inv-slot[data-selected="true"] {
+    outline: 3px solid #fff;
+    outline-offset: -1px;
+    box-shadow:
+      0 0 0 2px var(--color-rpg-gold),
+      inset 2px 2px 0 0 rgba(255, 255, 255, 0.45);
   }
 }
 
@@ -485,9 +634,41 @@ body {
   }
 }
 
+@keyframes critter-idle {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@keyframes critter-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+@keyframes r2-wobble {
+  50% {
+    transform: rotate(-6deg) translateY(-2px);
+  }
+}
+@keyframes shark-patrol {
+  from {
+    left: -90px;
+  }
+  to {
+    left: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .radar-sweep,
-  .ticker-track {
+  .ticker-track,
+  .critter-idle,
+  .critter-bob,
+  .r2-wobble,
+  .shark-patrol {
     animation: none !important;
   }
 }

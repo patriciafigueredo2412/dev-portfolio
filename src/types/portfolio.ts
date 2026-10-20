@@ -8,10 +8,10 @@ import type { LucideIcon } from "lucide-react";
  */
 
 export type ProjectCategory =
-  | "Full-Stack & Agentic"
-  | "Machine Learning"
-  | "Personalized ML"
-  | "Quantum Computing";
+  | "Embedded Systems"
+  | "Software Engineering"
+  | "Automation"
+  | "Web & Design";
 
 /** RPG-style difficulty badge shown on each quest (project) card. */
 export type QuestRank = "S" | "A" | "B" | "C";
@@ -25,7 +25,8 @@ export interface Project {
   /** Bullet list of architecture highlights, rendered as a "battle log". */
   architectureSummary: string[];
   techStack: string[];
-  githubUrl: string;
+  /** Repo link — omitted for projects without a public repository. */
+  githubUrl?: string;
   liveDemoUrl?: string;
   icon: LucideIcon;
 }

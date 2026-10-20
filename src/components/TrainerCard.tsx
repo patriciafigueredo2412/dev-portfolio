@@ -1,6 +1,6 @@
-import { Code2, Contact, Download, Mail, MapPin } from "lucide-react";
+import { MapPin } from "lucide-react";
 
-import { PixelAvatar } from "@/components/PixelIcons";
+import { Sprite } from "@/components/Sprite";
 import { profile } from "@/data/profile";
 import { projects } from "@/data/projects";
 
@@ -29,9 +29,11 @@ const CODE_LINES: { indent?: number; parts: { t: string; c: string }[] }[] = [
       { t: ".stack ", c: "#e06c75" },
       { t: "=", c: "#56b6c2" },
       { t: " {", c: "#e5e9f0" },
-      { t: '"TS"', c: "#98c379" },
+      { t: '"C"', c: "#98c379" },
       { t: ", ", c: "#e5e9f0" },
-      { t: '"React"', c: "#98c379" },
+      { t: '"C++"', c: "#98c379" },
+      { t: ", ", c: "#e5e9f0" },
+      { t: '"Java"', c: "#98c379" },
       { t: ", ", c: "#e5e9f0" },
       { t: '"Python"', c: "#98c379" },
       { t: "},", c: "#e5e9f0" },
@@ -42,7 +44,7 @@ const CODE_LINES: { indent?: number; parts: { t: string; c: string }[] }[] = [
     parts: [
       { t: ".focus ", c: "#e06c75" },
       { t: "= ", c: "#56b6c2" },
-      { t: '"multi-agent systems"', c: "#98c379" },
+      { t: '"embedded + clean software"', c: "#98c379" },
       { t: ",", c: "#e5e9f0" },
     ],
   },
@@ -63,13 +65,15 @@ const CODE_LINES: { indent?: number; parts: { t: string; c: string }[] }[] = [
 
 export function TrainerCard() {
   return (
-    <div className="font-sans min-h-full bg-[#f6efdb] text-[13px] leading-relaxed text-[#2b2118]">
+    <div className="font-sans min-h-full bg-[var(--color-quest-parchment)] text-[13px] leading-relaxed text-[#2b2118]">
       <div className="space-y-5 p-5">
         {/* Header: avatar + Main */}
         <header className="flex items-center gap-4">
-          <span className="grid h-16 w-16 shrink-0 place-items-center border-2 border-[#8a5a2b] bg-[#cfe3f7] p-1">
-            <PixelAvatar className="h-full w-full" />
-          </span>
+          <Sprite
+            name="portrait"
+            alt={`Pixel portrait of ${profile.name}`}
+            className="pixel-shadow h-28 w-28 shrink-0"
+          />
           <div>
             <h2 className="font-pixel text-[18px] text-[#1b1b1b]">Main</h2>
             <p className="font-terminal text-[16px] text-[#4a4a4a]">
@@ -127,14 +131,20 @@ export function TrainerCard() {
                   aria-hidden
                 />
                 <span>
-                  <a
-                    href={project.githubUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-semibold text-[var(--color-rpg-sapphire)] underline"
-                  >
-                    {project.title}
-                  </a>{" "}
+                  {project.githubUrl ? (
+                    <a
+                      href={project.githubUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-semibold text-[var(--color-rpg-sapphire)] underline"
+                    >
+                      {project.title}
+                    </a>
+                  ) : (
+                    <b className="font-semibold text-[var(--color-rpg-sapphire)]">
+                      {project.title}
+                    </b>
+                  )}{" "}
                   — {project.tagline}
                 </span>
               </li>
@@ -149,14 +159,14 @@ export function TrainerCard() {
             href={profile.resumePdfUrl}
             download
           >
-            <Download className="h-4 w-4" aria-hidden />
+            <Sprite name="floppy" className="h-4 w-4" />
             Resume
           </a>
           <a
             className="xp-button inline-flex items-center gap-2 no-underline"
             href={`mailto:${profile.socials.email}`}
           >
-            <Mail className="h-4 w-4" aria-hidden />
+            <Sprite name="gmail" className="h-4 w-4" />
             Email
           </a>
           <a
@@ -165,7 +175,7 @@ export function TrainerCard() {
             target="_blank"
             rel="noreferrer"
           >
-            <Code2 className="h-4 w-4" aria-hidden />
+            <Sprite name="github" className="h-4 w-4" />
             GitHub
           </a>
           <a
@@ -174,7 +184,7 @@ export function TrainerCard() {
             target="_blank"
             rel="noreferrer"
           >
-            <Contact className="h-4 w-4" aria-hidden />
+            <Sprite name="linkedin" className="h-4 w-4" />
             LinkedIn
           </a>
         </div>
