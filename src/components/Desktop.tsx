@@ -74,7 +74,7 @@ export function Desktop({ onOpen, children }: DesktopProps) {
       <button
         type="button"
         aria-label="Poke the dinosaur"
-        className="terrain-critter group absolute left-[max(9%,120px)] top-[27%] w-11"
+        className="terrain-critter group absolute left-[max(9%,120px)] top-[32%] w-11 sm:top-[27%]"
         onClick={() => onOpen("dino-bin")}
       >
         <span className="critter-bubble critter-bubble--left font-pixel">RAWR! Dig up my fossils?</span>
